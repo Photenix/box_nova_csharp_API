@@ -17,5 +17,5 @@ public partial class PerXrolXpriv
 
     public virtual Privilegio? IdPrivNavigation { get; set; }
 
-    public virtual Role? IdRolNavigation { get; set; }
+    public virtual Rol? IdRolNavigation { get; set; }
 }
