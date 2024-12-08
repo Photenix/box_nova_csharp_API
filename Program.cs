@@ -1,5 +1,9 @@
 using BoxNovaSoftAPI.Models;
+using BoxNovaSoftAPI.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +18,33 @@ builder.Services.AddDbContext<BoxNovaDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("local"))
 );
 
+//Creacion de token
+
+builder.Services.AddScoped<IAutorizationService, AutorizationService>();
+
+var key = builder.Configuration.GetValue<string>("JwtSettings:key");
+
+var keyBytes = Encoding.ASCII.GetBytes(key);
+
+builder.Services.AddAuthentication(config =>
+{
+    config.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    config.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(config =>
+{
+    config.SaveToken = true;
+    config.RequireHttpsMetadata = false;
+    config.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(keyBytes),
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateLifetime = false,
+        ClockSkew = TimeSpan.Zero,
+    };
+});
+
 
 var app = builder.Build();
 
@@ -25,6 +56,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseAuthorization();
+
+app.UseAuthentication();
 
 app.MapControllers();
 

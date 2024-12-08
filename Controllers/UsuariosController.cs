@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BoxNovaSoftAPI.Models;
+using BoxNovaSoftAPI.Models.Customs;
+using BoxNovaSoftAPI.Services;
 
 namespace BoxNovaSoftAPI.Controllers
 {
@@ -14,11 +16,62 @@ namespace BoxNovaSoftAPI.Controllers
     public class UsuariosController : ControllerBase
     {
         private readonly BoxNovaDbContext _context;
+        private readonly IAutorizationService _autorizationService;
 
-        public UsuariosController(BoxNovaDbContext context)
+        public UsuariosController(BoxNovaDbContext context, IAutorizationService autorizationService)
         {
             _context = context;
+            _autorizationService = autorizationService;
         }
+
+        // ************************** Autentificación de usuarios ************************** //
+
+        //Cadena de autentificación de usuarios
+        [HttpPost]
+        [Route("login")]
+        public async Task<ActionResult> Login([FromBody] AutorizacionRequest autorizacion )
+        {
+            var resultado_autorization = await _autorizationService.DevolverToken(autorizacion);
+            if (resultado_autorization == null)
+                return Unauthorized();
+            return Ok(resultado_autorization);
+        }
+
+        [HttpPost]
+        [Route("register")]
+        public async Task<ActionResult> Register([FromBody] Usuario usuario)
+        {
+            var usuario_encontrado = _context.Usuarios.FirstOrDefault( x =>
+                x.CorreoUsuario == usuario.CorreoUsuario
+            );
+            if( usuario_encontrado == null )
+            {
+                _context.Usuarios.Add(usuario);
+                try
+                {
+                    await _context.SaveChangesAsync();
+                    //_context.SaveChanges();
+                }
+                catch (DbUpdateException)
+                {
+                    if (UsuarioExists(usuario.IdUsuario))
+                    {
+                        return Conflict();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+
+                return Ok(usuario);
+            }
+            //El correo ya ha sido creado por lo tanto no se crea el nuevo usuario
+            else return BadRequest();
+        }
+
+
+        // ************************** INFORMACION DE USUARIOS ************************** //
 
         // GET: api/Usuarios
         [HttpGet]
