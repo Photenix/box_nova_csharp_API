@@ -55,9 +55,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseAuthorization();
-
+// primero te piden tu ID y luego te permiten entrar
 app.UseAuthentication();
+
+app.UseAuthorization();
 
 app.MapControllers();
 
