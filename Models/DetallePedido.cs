@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace BoxNovaDB.Models
+namespace BoxNovaSoftAPI.Models
 {
     public class DetallePedido
     {
