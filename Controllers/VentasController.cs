@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using BoxNovaDB.Data;
 using BoxNovaDB.Models;
 
-namespace BoxNovaDB.Controllers
+namespace BoxNovaSoftAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
