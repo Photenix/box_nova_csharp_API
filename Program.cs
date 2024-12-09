@@ -14,6 +14,11 @@ builder.Services.AddDbContext<BoxNovaDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("local"))
 );
 
+builder.Services.AddDbContext<SebasSPContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("NuevoDbConnection")));
+
+
+
 
 var app = builder.Build();
 
