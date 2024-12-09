@@ -5,16 +5,16 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using WebEmpresa.Data;
-using WebEmpresa.Models;
+using BoxNovaDB.Data;
+using BoxNovaDB.Models;
 
-namespace WebEmpresa.Controllers
+namespace BoxNovaDB.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class PedidoesController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly BoxNovaDBContext _context;
 
         public PedidoesController(ApplicationDbContext context)
         {
