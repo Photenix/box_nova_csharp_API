@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace WebEmpresa.Models
+namespace BoxNovaDB.Models
 {
     public class Pedido
     {
