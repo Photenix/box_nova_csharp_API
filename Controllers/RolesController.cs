@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BoxNovaSoftAPI.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BoxNovaSoftAPI.Controllers
 {
@@ -43,6 +44,7 @@ namespace BoxNovaSoftAPI.Controllers
 
         // PUT: api/Roles/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutRol(int id, Rol rol)
         {
@@ -74,6 +76,7 @@ namespace BoxNovaSoftAPI.Controllers
 
         // POST: api/Roles
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<Rol>> PostRol(Rol rol)
         {
@@ -98,6 +101,7 @@ namespace BoxNovaSoftAPI.Controllers
         }
 
         // DELETE: api/Roles/5
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteRol(int id)
         {
