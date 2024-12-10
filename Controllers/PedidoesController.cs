@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using BoxNovaDB.Data;
-using BoxNovaDB.Models;
+//using BoxNovaSoftAPI.Data;
+using BoxNovaSoftAPI.Models;
 
 namespace BoxNovaSoftAPI.Controllers
 {
@@ -14,9 +14,9 @@ namespace BoxNovaSoftAPI.Controllers
     [ApiController]
     public class PedidoesController : ControllerBase
     {
-        private readonly BoxNovaDBContext _context;
+        private readonly BoxNovaDbContext _context;
 
-        public PedidoesController(ApplicationDbContext context)
+        public PedidoesController(BoxNovaDbContext context)
         {
             _context = context;
         }
@@ -78,10 +78,61 @@ namespace BoxNovaSoftAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<Pedido>> PostPedido(Pedido pedido)
         {
+            // Validar que el cliente exista
+            var cliente = await _context.Clientes.FindAsync(pedido.IdCliente);
+            if (cliente == null)
+            {
+                return BadRequest("Cliente no encontrado");
+            }
+
+            // Establecer fecha actual si no se proporcionó
+            if (pedido.FechaDelPedido == default)
+            {
+                pedido.FechaDelPedido = DateTime.Now;
+            }
+
+            // Establecer estado inicial si no se proporcionó
+            if (string.IsNullOrEmpty(pedido.EstadoPedido))
+            {
+                pedido.EstadoPedido = "Pendiente";
+            }
+
+            // Verificar si los detalles del pedido tienen información
+            if (pedido.DetallePedidos == null || !pedido.DetallePedidos.Any())
+            {
+                return BadRequest("El pedido debe contener al menos un detalle");
+            }
+
+            // Calcular monto total y subtotales
+            try
+            {
+                pedido.MontoTotal = 0; // Resetear a 0 antes de calcular
+
+                foreach (var detalle in pedido.DetallePedidos)
+                {
+                    // Validar que el producto exista
+                    var producto = await _context.Productos.FindAsync(detalle.IdProducto);
+                    if (producto == null)
+                    {
+                        return BadRequest($"Producto con ID {detalle.IdProducto} no encontrado");
+                    }
+
+                    // Calcular subtotal para cada detalle
+                    detalle.Subtotal = detalle.Cantidad * detalle.PrecUnitario;
+
+                    // Sumar al monto total del pedido
+                    pedido.MontoTotal += detalle.Subtotal;
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error al calcular el monto total: {ex.Message}");
+            }
+
             _context.Pedidos.Add(pedido);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetPedido", new { id = pedido.IdPedido }, pedido);
+            return CreatedAtAction(nameof(GetPedido), new { id = pedido.IdPedido }, pedido);
         }
 
         // DELETE: api/Pedidoes/5
