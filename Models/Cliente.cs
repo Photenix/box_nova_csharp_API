@@ -14,6 +14,7 @@
             public DateTime FechaRegistro { get; set; }
 
             public ICollection<Carrito> Carritos { get; set; } = new List<Carrito>();
+            public ICollection<Venta> Ventas { get; set; } = new List<Venta>();
         }
     }
 
