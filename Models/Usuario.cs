@@ -21,9 +21,9 @@ public partial class Usuario
 
     public string GeneroUsuario { get; set; } = null!;
 
-    public string EstadoUsuario { get; set; } = null!;
+    public bool EstadoUsuario { get; set; }
 
     public int FkRol { get; set; }
 
-    public virtual Role FkRolNavigation { get; set; } = null!;
+    public virtual Rol? FkRolNavigation { get; set; }
 }

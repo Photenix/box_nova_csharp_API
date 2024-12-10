@@ -18,7 +18,7 @@ public partial class BoxNovaDbContext : DbContext
 
     public virtual DbSet<Privilegio> Privilegios { get; set; }
 
-    public virtual DbSet<Role> Roles { get; set; }
+    public virtual DbSet<Rol> Roles { get; set; }
 
     public virtual DbSet<Usuario> Usuarios { get; set; }
 
@@ -83,7 +83,7 @@ public partial class BoxNovaDbContext : DbContext
                 .HasColumnName("nombre_privilegio");
         });
 
-        modelBuilder.Entity<Role>(entity =>
+        modelBuilder.Entity<Rol>(entity =>
         {
             entity.HasKey(e => e.IdRol).HasName("pk_rol");
 
@@ -126,9 +126,8 @@ public partial class BoxNovaDbContext : DbContext
                 .HasColumnName("correo_usuario");
             entity.Property(e => e.CumpleanoUsuario).HasColumnName("cumpleano_usuario");
             entity.Property(e => e.EstadoUsuario)
-                .HasMaxLength(20)
                 .IsUnicode(false)
-                .HasDefaultValueSql("((1))")
+                .HasDefaultValue(true)
                 .HasColumnName("estado_usuario");
             entity.Property(e => e.FechaCreacionUsuario).HasColumnName("fecha_creacion_usuario");
             entity.Property(e => e.FkRol).HasColumnName("fk_rol");
@@ -147,8 +146,8 @@ public partial class BoxNovaDbContext : DbContext
 
             entity.HasOne(d => d.FkRolNavigation).WithMany(p => p.Usuarios)
                 .HasForeignKey(d => d.FkRol)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_rol_user");
+                //.OnDelete(DeleteBehavior.Restrict)//.OnDelete(DeleteBehavior.ClientSetNull)
         });
 
         OnModelCreatingPartial(modelBuilder);
