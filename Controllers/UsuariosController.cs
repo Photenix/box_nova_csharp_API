@@ -75,7 +75,7 @@ namespace BoxNovaSoftAPI.Controllers
         // ************************** INFORMACION DE USUARIOS ************************** //
 
         // GET: api/Usuarios
-        [Authorize]
+        //[Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Usuario>>> GetUsuarios()
         {
@@ -162,6 +162,8 @@ namespace BoxNovaSoftAPI.Controllers
             {
                 return NotFound();
             }
+
+            
 
             _context.Usuarios.Remove(usuario);
             await _context.SaveChangesAsync();
