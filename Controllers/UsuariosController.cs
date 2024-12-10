@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using BoxNovaSoftAPI.Models;
 using BoxNovaSoftAPI.Models.Customs;
 using BoxNovaSoftAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BoxNovaSoftAPI.Controllers
 {
@@ -74,6 +75,7 @@ namespace BoxNovaSoftAPI.Controllers
         // ************************** INFORMACION DE USUARIOS ************************** //
 
         // GET: api/Usuarios
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Usuario>>> GetUsuarios()
         {
