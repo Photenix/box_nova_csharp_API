@@ -22,7 +22,10 @@ namespace BoxNovaSoftAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Carrito>>> GetCarritos()
         {
-            return await _context.Carritos.Include(c => c.Cliente).Include(c => c.IdProducto).ToListAsync();
+            return await _context.Carritos
+        .Include(c => c.Cliente) // Esto funciona si Cliente es una propiedad de navegación
+        .ToListAsync();
+
         }
 
         // GET: api/Carritos/5
