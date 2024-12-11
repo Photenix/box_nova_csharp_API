@@ -11,9 +11,9 @@ namespace BoxNovaSoftAPI.Controllers
     [ApiController]
     public class SubCategoriaProductosController : ControllerBase
     {
-        private readonly SebasSPContext _context;
+        private readonly BoxNovaDbContext _context;
 
-        public SubCategoriaProductosController(SebasSPContext context)
+        public SubCategoriaProductosController(BoxNovaDbContext context)
         {
             _context = context;
         }

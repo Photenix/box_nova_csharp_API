@@ -22,6 +22,21 @@ public partial class BoxNovaDbContext : DbContext
 
     public virtual DbSet<Usuario> Usuarios { get; set; }
 
+    public virtual DbSet<Cliente> Clientes { get; set; } = null!;
+    public virtual DbSet<Carrito> Carritos { get; set; } = null!;
+    public virtual DbSet<CategoriaProducto> CategoriaProductos { get; set; } = null!;
+    public virtual DbSet<SubCategoriaProducto> SubCategoriaProductos { get; set; } = null!;
+
+
+    public DbSet<Producto> Productos { get; set; }
+    public DbSet<Venta> Ventas { get; set; }
+    public DbSet<DetalleVenta> DetalleVentas { get; set; }
+    //public DbSet<Devolucion> Devoluciones { get; set; }
+    public DbSet<Pedido> Pedidos { get; set; }
+    public DbSet<DetallePedido> DetallePedidos { get; set; }
+    //public DbSet<CategoriaProducto> CatProductos { get; set; }
+    //public DbSet<CodigoDeBarras> CodigosBarras { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<PerXrolXpriv>(entity =>
@@ -149,6 +164,88 @@ public partial class BoxNovaDbContext : DbContext
                 .HasConstraintName("fk_rol_user");
                 //.OnDelete(DeleteBehavior.Restrict)//.OnDelete(DeleteBehavior.ClientSetNull)
         });
+
+        // Configuración de Cliente
+        modelBuilder.Entity<Cliente>(entity =>
+        {
+            entity.HasKey(e => e.IdCliente);
+            entity.Property(e => e.NombreCliente).IsRequired().HasMaxLength(30);
+            entity.Property(e => e.ApellidoCliente).IsRequired().HasMaxLength(30);
+            entity.Property(e => e.CedulaCliente).IsRequired().HasMaxLength(20);
+            entity.HasIndex(e => e.CedulaCliente).IsUnique();
+            entity.Property(e => e.GeneroCliente).HasMaxLength(1);
+            entity.Property(e => e.FechaRegistro).IsRequired();
+
+            entity.HasMany(e => e.Carritos)
+                  .WithOne(e => e.Cliente)
+                  .HasForeignKey(e => e.IdCliente)
+                  .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // Configuración de Carrito
+        modelBuilder.Entity<Carrito>(entity =>
+        {
+            entity.HasKey(e => e.IdDetalle);
+            entity.Property(e => e.Cantidad).IsRequired().HasDefaultValue(1);
+            entity.Property(e => e.PrecioUnitario).IsRequired();
+            entity.Property(e => e.Subtotal).HasComputedColumnSql("[Cantidad] * [PrecioUnitario]");
+
+            entity.HasOne(e => e.Cliente)
+                  .WithMany(e => e.Carritos)
+                  .HasForeignKey(e => e.IdCliente);
+        });
+
+        // Configuración de CategoriaProducto
+        modelBuilder.Entity<CategoriaProducto>(entity =>
+        {
+            entity.HasKey(e => e.IdCProd);
+            entity.Property(e => e.NombreCProd).IsRequired().HasMaxLength(30);
+            entity.Property(e => e.EstadoCProd).IsRequired();
+        });
+
+        // Configuración de SubCategoriaProducto
+        modelBuilder.Entity<SubCategoriaProducto>(entity =>
+        {
+            entity.HasKey(e => e.IdSubCProd);
+            entity.Property(e => e.NombreCProd).IsRequired().HasMaxLength(30);
+            entity.Property(e => e.EstadoCProd).IsRequired();
+
+            entity.HasOne(e => e.Categoria)
+                  .WithMany(e => e.SubCategorias)
+                  .HasForeignKey(e => e.IdCProd)
+                  .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // Configuración de la relación entre DetalleVenta y SubTotal
+        modelBuilder.Entity<DetalleVenta>()
+            .Property(d => d.SubTotal)
+            .HasColumnType("decimal(18,2)");
+
+        // Configuración de la relación entre Cliente y Venta
+        modelBuilder.Entity<Cliente>()
+            .HasMany(c => c.Ventas)
+            .WithOne(v => v.Cliente)
+            .HasForeignKey(v => v.ClienteId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // Configuración de la relación entre Venta y DetalleVenta
+        modelBuilder.Entity<Venta>()
+            .HasMany(v => v.DetalleVenta)
+            .WithOne(d => d.Venta)
+            .HasForeignKey(d => d.VentaId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // Configuración de la relación entre Pedido y DetallePedido
+        modelBuilder.Entity<Pedido>()
+            .HasMany(p => p.DetallePedidos)
+            .WithOne(d => d.Pedido)
+            .HasForeignKey(d => d.IdPedido)  // Asegúrate de que 'IdPedido' está bien definido como clave foránea
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // Configuración de la relación entre Producto y CodigoDeBarras
+        modelBuilder.Entity<Producto>()
+             .HasKey(e => e.IdProducto);
+
 
         OnModelCreatingPartial(modelBuilder);
     }
