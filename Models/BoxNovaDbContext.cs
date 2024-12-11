@@ -207,10 +207,10 @@ public partial class BoxNovaDbContext : DbContext
         modelBuilder.Entity<SubCategoriaProducto>(entity =>
         {
             entity.HasKey(e => e.IdSubCProd);
-            entity.Property(e => e.NombreCProd).IsRequired().HasMaxLength(30);
-            entity.Property(e => e.EstadoCProd).IsRequired();
+            entity.Property(e => e.NombreSubCProd).IsRequired().HasMaxLength(30);
+            entity.Property(e => e.EstadoSubCProd).IsRequired();
 
-            entity.HasOne(e => e.Categoria)
+            entity.HasOne(e => e.CategoriaProducto)
                   .WithMany(e => e.SubCategorias)
                   .HasForeignKey(e => e.IdCProd)
                   .OnDelete(DeleteBehavior.Cascade);
