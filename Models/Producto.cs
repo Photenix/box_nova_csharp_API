@@ -1,4 +1,6 @@
-﻿namespace BoxNovaSoftAPI.Models
+﻿using System.Text.Json.Serialization;
+
+namespace BoxNovaSoftAPI.Models
 {
     public class Producto
     {
@@ -10,8 +12,10 @@
         public string? ClasificacionProducto { get; set; }
         public bool EstadoProducto { get; set; }
         
+        [JsonPropertyName("categoria_nombre")]
         public string? Categoria { get; set; }
-        public CategoriaProducto categoria { get; set; }
 
+        [JsonPropertyName("categoria_detalle")]
+        public CategoriaProducto categoria { get; set; }
     }
 }

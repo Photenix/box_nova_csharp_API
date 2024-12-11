@@ -22,14 +22,18 @@ namespace BoxNovaSoftAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<SubCategoriaProducto>>> GetSubCategoriaProductos()
         {
-            return await _context.SubCategoriaProductos.Include(s => s.IdCProd).ToListAsync();
+            // Incluir la propiedad de navegación CategoriaProducto
+            return await _context.SubCategoriaProductos
+                .Include(s => s.CategoriaProducto)  // Incluir la relación con CategoriaProducto
+                .ToListAsync();
         }
 
         // GET: api/SubCategoriaProductos/5
         [HttpGet("{id}")]
         public async Task<ActionResult<SubCategoriaProducto>> GetSubCategoriaProducto(int id)
         {
-            var subCategoriaProducto = await _context.SubCategoriaProductos.Include(s => s.IdCProd)
+            var subCategoriaProducto = await _context.SubCategoriaProductos
+                .Include(s => s.CategoriaProducto)  // Incluir la relación con CategoriaProducto
                 .FirstOrDefaultAsync(s => s.IdSubCProd == id);
 
             if (subCategoriaProducto == null)
