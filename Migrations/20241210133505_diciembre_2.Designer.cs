@@ -4,6 +4,7 @@ using BoxNovaSoftAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BoxNovaSoftAPI.Migrations
 {
     [DbContext(typeof(BoxNovaDbContext))]
-    partial class BoxNovaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241210133505_diciembre_2")]
+    partial class diciembre_2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -372,13 +375,13 @@ namespace BoxNovaSoftAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdSubCProd"));
 
-                    b.Property<bool>("EstadoSubCProd")
+                    b.Property<bool>("EstadoCProd")
                         .HasColumnType("bit");
 
                     b.Property<int>("IdCProd")
                         .HasColumnType("int");
 
-                    b.Property<string>("NombreSubCProd")
+                    b.Property<string>("NombreCProd")
                         .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
@@ -497,29 +500,6 @@ namespace BoxNovaSoftAPI.Migrations
                     b.ToTable("Ventas");
                 });
 
-            modelBuilder.Entity("CategoriaProducto", b =>
-                {
-                    b.Property<int>("IdCProd")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdCProd"));
-
-                    b.Property<bool>("EstadoCProd")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("NombreCProd")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
-
-                    b.HasKey("IdCProd");
-
-                    b.ToTable("CategoriaProducto");
-
-                    b.HasAnnotation("Relational:JsonPropertyName", "categoria_detalle");
-                });
-
             modelBuilder.Entity("BoxNovaSoftAPI.Models.Carrito", b =>
                 {
                     b.HasOne("BoxNovaSoftAPI.Models.Cliente", "Cliente")
@@ -617,13 +597,13 @@ namespace BoxNovaSoftAPI.Migrations
 
             modelBuilder.Entity("BoxNovaSoftAPI.Models.SubCategoriaProducto", b =>
                 {
-                    b.HasOne("CategoriaProducto", "CategoriaProducto")
+                    b.HasOne("BoxNovaSoftAPI.Models.CategoriaProducto", "Categoria")
                         .WithMany("SubCategorias")
                         .HasForeignKey("IdCProd")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("CategoriaProducto");
+                    b.Navigation("Categoria");
                 });
 
             modelBuilder.Entity("BoxNovaSoftAPI.Models.Usuario", b =>
@@ -647,6 +627,11 @@ namespace BoxNovaSoftAPI.Migrations
                         .IsRequired();
 
                     b.Navigation("Cliente");
+                });
+
+            modelBuilder.Entity("BoxNovaSoftAPI.Models.CategoriaProducto", b =>
+                {
+                    b.Navigation("SubCategorias");
                 });
 
             modelBuilder.Entity("BoxNovaSoftAPI.Models.Cliente", b =>
@@ -681,11 +666,6 @@ namespace BoxNovaSoftAPI.Migrations
             modelBuilder.Entity("BoxNovaSoftAPI.Models.Venta", b =>
                 {
                     b.Navigation("DetalleVenta");
-                });
-
-            modelBuilder.Entity("CategoriaProducto", b =>
-                {
-                    b.Navigation("SubCategorias");
                 });
 #pragma warning restore 612, 618
         }

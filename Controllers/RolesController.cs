@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BoxNovaSoftAPI.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BoxNovaSoftAPI.Controllers
 {
@@ -24,11 +25,15 @@ namespace BoxNovaSoftAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Rol>>> GetRoles()
         {
+            //var roles = await _context.Roles.Include(r => r.PerXrolXprivs).ToListAsync();
+            //var roles = await _context.PerXrolXprivs.ToListAsync();
+            //return roles;
             return await _context.Roles.ToListAsync();
         }
 
         // GET: api/Roles/5
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<Rol>> GetRol(int id)
         {
             var rol = await _context.Roles.FindAsync(id);
@@ -75,6 +80,7 @@ namespace BoxNovaSoftAPI.Controllers
         // POST: api/Roles
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<Rol>> PostRol(Rol rol)
         {
             _context.Roles.Add(rol);
@@ -99,12 +105,21 @@ namespace BoxNovaSoftAPI.Controllers
 
         // DELETE: api/Roles/5
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> DeleteRol(int id)
         {
             var rol = await _context.Roles.FindAsync(id);
             if (rol == null)
             {
                 return NotFound();
+            }
+
+            var user = _context.Usuarios.FirstOrDefault(e => e.FkRol == id);
+
+            if( user != null)
+            {
+                //No se puede eliminar un rol que tiene un usuario
+                return BadRequest();
             }
 
             _context.Roles.Remove(rol);
