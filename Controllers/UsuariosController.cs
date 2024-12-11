@@ -99,13 +99,51 @@ namespace BoxNovaSoftAPI.Controllers
         // PUT: api/Usuarios/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUsuario(int id, Usuario usuario)
+        public async Task<IActionResult> PutUsuario(int id, UsuarioUpdate formUsuario)
         {
+
+            if (formUsuario == null)
+            {
+                return BadRequest();
+            }
+
+            var usuario = _context.Usuarios.Find(id);
+
+            if (usuario == null)
+            {
+                return NotFound();
+            }
+
+            if (formUsuario.TarjetaIdentidad != null)
+            usuario.TarjetaIdentidad = formUsuario.TarjetaIdentidad;
+
+            if (formUsuario.CorreoUsuario != null)
+                usuario.CorreoUsuario = formUsuario.CorreoUsuario;
+
+            if (formUsuario.NombreUsuario != null)
+                usuario.NombreUsuario = formUsuario.NombreUsuario;
+
+            if (formUsuario.ContrasenaUsuario != null)
+                usuario.ContrasenaUsuario = formUsuario.ContrasenaUsuario;
+
+            usuario.CumpleanoUsuario = formUsuario.CumpleanoUsuario; // Asignación directa, no es nullable
+
+            if (formUsuario.GeneroUsuario != null)
+                usuario.GeneroUsuario = formUsuario.GeneroUsuario;
+
+            if (formUsuario.EstadoUsuario.HasValue)
+                usuario.EstadoUsuario = formUsuario.EstadoUsuario.Value;
+
+            if (formUsuario.FkRol.HasValue)
+                usuario.FkRol = formUsuario.FkRol.Value;
+
+            /*
             if (id != usuario.IdUsuario)
             {
                 return BadRequest();
             }
 
+            */
             _context.Entry(usuario).State = EntityState.Modified;
 
             try

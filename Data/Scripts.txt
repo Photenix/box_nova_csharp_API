@@ -1,0 +1,12 @@
+{
+  "idUsuario": 0,
+  "tarjetaIdentidad": "123456789",
+  "correoUsuario": "usuario@example.com",
+  "nombreUsuario": "Nombre Ejemplo",
+  "contrasenaUsuario": "123456",
+  "cumpleanoUsuario": "2024-12-10",
+  "fechaCreacionUsuario": "2024-12-10",
+  "generoUsuario": "M",
+  "estadoUsuario": true,
+  "fkRol": 1
+}

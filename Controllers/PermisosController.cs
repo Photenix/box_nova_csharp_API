@@ -107,6 +107,12 @@ namespace BoxNovaSoftAPI.Controllers
                 return NotFound();
             }
 
+            var perxRolxPriv = _context.PerXrolXprivs.FirstOrDefault(e => e.IdPer == id);
+            if (perxRolxPriv != null)
+            {
+                return BadRequest( new { message = "El permiso esta relacionado a un rol y privilegio" });
+            }
+
             _context.Permisos.Remove(permiso);
             await _context.SaveChangesAsync();
 

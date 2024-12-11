@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BoxNovaSoftAPI.Models;
 using Microsoft.AspNetCore.Authorization;
+using BoxNovaSoftAPI.Models.Update;
 
 namespace BoxNovaSoftAPI.Controllers
 {
@@ -32,8 +33,8 @@ namespace BoxNovaSoftAPI.Controllers
         }
 
         // GET: api/Roles/5
+        //[Authorize]
         [HttpGet("{id}")]
-        [Authorize]
         public async Task<ActionResult<Rol>> GetRol(int id)
         {
             var rol = await _context.Roles.FindAsync(id);
@@ -48,14 +49,41 @@ namespace BoxNovaSoftAPI.Controllers
 
         // PUT: api/Roles/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [Authorize]
+        //[Authorize]
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutRol(int id, Rol rol)
+        //public async Task<IActionResult> PutRol(int id, Rol rol)
+        public async Task<IActionResult> PutRol(int id, [FromBody] RolUpdate formRol)
         {
+            if (formRol == null)
+            {
+                return BadRequest();
+            }
+
+            var rol = await _context.Roles.FindAsync(id);
+            if (rol == null)
+            {
+                return NotFound();
+            }
+
+            if( rol.NombreRol == "Administrador")
+            {
+                return BadRequest(new { mesage = "No se puede modificar el rol de Administrador" });
+            }
+
+            if (formRol.NombreRol != null) {
+                rol.NombreRol = formRol.NombreRol;
+            }
+
+            if( formRol.EstadoRol != null )
+                rol.EstadoRol = (bool)formRol.EstadoRol;
+            
+            /*
+
             if (id != rol.IdRol)
             {
                 return BadRequest();
             }
+            */
 
             _context.Entry(rol).State = EntityState.Modified;
 
@@ -82,7 +110,6 @@ namespace BoxNovaSoftAPI.Controllers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [Authorize]
         [HttpPost]
-        [Authorize]
         public async Task<ActionResult<Rol>> PostRol(Rol rol)
         {
             _context.Roles.Add(rol);
@@ -106,9 +133,8 @@ namespace BoxNovaSoftAPI.Controllers
         }
 
         // DELETE: api/Roles/5
-        [Authorize]
+        //[Authorize]
         [HttpDelete("{id}")]
-        [Authorize]
         public async Task<IActionResult> DeleteRol(int id)
         {
             var rol = await _context.Roles.FindAsync(id);
@@ -117,12 +143,17 @@ namespace BoxNovaSoftAPI.Controllers
                 return NotFound();
             }
 
+            if( rol.NombreRol == "Administrador")
+            {
+                return BadRequest(new { message = "El rol Administrador no se puede eliminar ya que es un rol esencial" });
+            }
+
             var user = _context.Usuarios.FirstOrDefault(e => e.FkRol == id);
 
             if( user != null)
             {
                 //No se puede eliminar un rol que tiene un usuario
-                return BadRequest();
+                return BadRequest(new { message = "No se puede eliminar el rol porque está asociado a uno o más usuarios." });
             }
 
             _context.Roles.Remove(rol);
