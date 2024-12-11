@@ -46,6 +46,11 @@ namespace BoxNovaSoftAPI.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutPrivilegio(int id, Privilegio privilegio)
         {
+            if (id >= 1 && id <= 5)
+            {
+                return BadRequest(new { message = "El id seleccionado no se puede editar es información base" });
+            }
+
             if (id != privilegio.IdPrivilegio)
             {
                 return BadRequest();
@@ -101,6 +106,11 @@ namespace BoxNovaSoftAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePrivilegio(int id)
         {
+            if( id >= 1 && id <= 5)
+            {
+                return BadRequest(new { message = "El id seleccionado no se puede eliminar es información base" });
+            }
+
             var privilegio = await _context.Privilegios.FindAsync(id);
             if (privilegio == null)
             {
