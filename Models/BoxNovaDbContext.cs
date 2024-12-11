@@ -22,6 +22,15 @@ public partial class BoxNovaDbContext : DbContext
 
     public virtual DbSet<Usuario> Usuarios { get; set; }
 
+<<<<<<< Updated upstream
+=======
+    public virtual DbSet<Cliente> Clientes { get; set; } = null!;
+    public virtual DbSet<Carrito> Carritos { get; set; } = null!;
+    public virtual DbSet<CategoriaProducto> CategoriaProductos { get; set; } = null!;
+    public virtual DbSet<SubCategoriaProducto> SubCategoriaProductos { get; set; } = null!;
+    public object DetalleVentas { get; internal set; }
+
+>>>>>>> Stashed changes
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<PerXrolXpriv>(entity =>
