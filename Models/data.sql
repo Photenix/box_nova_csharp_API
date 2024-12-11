@@ -71,7 +71,7 @@ CREATE TABLE Usuarios (
   -- The gener is necessary because this information give us more information about customers
   genero_usuario VARCHAR(5) NOT NULL,
 
-  estado_usuario VARCHAR(20) NOT NULL DEFAULT 1,
+  estado_usuario bit NOT NULL DEFAULT 1,
   
   fk_rol INT NOT NULL,
 

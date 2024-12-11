@@ -5,7 +5,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+<<<<<<< HEAD
 using BoxNovaSoftAPI.Data;
+=======
+//using BoxNovaSoftAPI.Data;
+>>>>>>> main
 using BoxNovaSoftAPI.Models;
 
 namespace BoxNovaSoftAPI.Controllers
@@ -16,7 +20,7 @@ namespace BoxNovaSoftAPI.Controllers
     {
         private readonly BoxNovaDbContext _context;
 
-        public DetalleVentasController(ApplicationDbContext context)
+        public DetalleVentasController(BoxNovaDbContext context)
         {
             _context = context;
         }

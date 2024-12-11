@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using BoxNovaDB.Data;
-using BoxNovaDB.Models;
+//using BoxNovaSoftAPI.Data;
+using BoxNovaSoftAPI.Models;
 
 namespace BoxNovaSoftAPI.Controllers
 {
@@ -14,9 +14,9 @@ namespace BoxNovaSoftAPI.Controllers
     [ApiController]
     public class VentasController : ControllerBase
     {
-        private readonly BoxNovaDBContext _context;
+        private readonly BoxNovaDbContext _context;
 
-        public VentasController(ApplicationDbContext context)
+        public VentasController(BoxNovaDbContext context)
         {
             _context = context;
         }
