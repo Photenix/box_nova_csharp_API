@@ -22,14 +22,18 @@ namespace BoxNovaSoftAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CategoriaProducto>>> GetCategoriaProductos()
         {
-            return await _context.CategoriaProductos.ToListAsync();
+            return await _context.CategoriaProductos
+                //.Include(c => c.SubCategorias) // Incluye las subcategorías asociadas
+                .ToListAsync();
         }
 
         // GET: api/CategoriaProductos/5
         [HttpGet("{id}")]
         public async Task<ActionResult<CategoriaProducto>> GetCategoriaProducto(int id)
         {
-            var categoriaProducto = await _context.CategoriaProductos.FindAsync(id);
+            var categoriaProducto = await _context.CategoriaProductos
+                //.Include(c => c.SubCategorias) // Incluye las subcategorías asociadas
+                .FirstOrDefaultAsync(c => c.IdCProd == id);
 
             if (categoriaProducto == null)
             {
@@ -39,7 +43,6 @@ namespace BoxNovaSoftAPI.Controllers
             return categoriaProducto;
         }
 
-        // PUT: api/CategoriaProductos/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCategoriaProducto(int id, CategoriaProducto categoriaProducto)
         {
@@ -48,27 +51,31 @@ namespace BoxNovaSoftAPI.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(categoriaProducto).State = EntityState.Modified;
+            // Verificar si la categoría existe antes de actualizar
+            var categoriaExistente = await _context.CategoriaProductos
+                .FirstOrDefaultAsync(c => c.IdCProd == id);
+
+            if (categoriaExistente == null)
+            {
+                return NotFound($"No se encontró la categoría con ID {id}");
+            }
+
+            // Actualizar propiedades específicas si es necesario
+            categoriaExistente.NombreCProd = categoriaProducto.NombreCProd;
+            // Actualiza otras propiedades según sea necesario
 
             try
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateException ex)
             {
-                if (!CategoriaProductoExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                // Manejo más detallado de errores
+                return StatusCode(500, $"Error al actualizar la categoría: {ex.Message}");
             }
 
             return NoContent();
         }
-
         // POST: api/CategoriaProductos
         [HttpPost]
         public async Task<ActionResult<CategoriaProducto>> PostCategoriaProducto(CategoriaProducto categoriaProducto)
@@ -79,25 +86,32 @@ namespace BoxNovaSoftAPI.Controllers
             return CreatedAtAction("GetCategoriaProducto", new { id = categoriaProducto.IdCProd }, categoriaProducto);
         }
 
-        // DELETE: api/CategoriaProductos/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCategoriaProducto(int id)
         {
-            var categoriaProducto = await _context.CategoriaProductos.FindAsync(id);
+            // Verificar si la categoría existe
+            var categoriaProducto = await _context.CategoriaProductos
+                .FirstOrDefaultAsync(c => c.IdCProd == id);
+
             if (categoriaProducto == null)
             {
-                return NotFound();
+                return NotFound($"No se encontró la categoría con ID {id}");
             }
 
+            // Verificar si hay subcategorías asociadas
+            bool tieneSubcategorias = await _context.SubCategoriaProductos
+                .AnyAsync(sc => sc.IdCProd == id);
+
+            if (tieneSubcategorias)
+            {
+                return BadRequest($"No se puede eliminar la categoría con ID {id} porque tiene subcategorías asociadas.");
+            }
+
+            // Si no hay subcategorías, proceder con la eliminación
             _context.CategoriaProductos.Remove(categoriaProducto);
             await _context.SaveChangesAsync();
 
             return NoContent();
-        }
-
-        private bool CategoriaProductoExists(int id)
-        {
-            return _context.CategoriaProductos.Any(e => e.IdCProd == id);
         }
     }
 }

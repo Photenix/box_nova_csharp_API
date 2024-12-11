@@ -4,6 +4,7 @@ using BoxNovaSoftAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BoxNovaSoftAPI.Migrations
 {
     [DbContext(typeof(BoxNovaDbContext))]
-    partial class BoxNovaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241211004246_otro")]
+    partial class otro
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -54,27 +57,6 @@ namespace BoxNovaSoftAPI.Migrations
                     b.HasIndex("IdCliente");
 
                     b.ToTable("Carritos");
-                });
-
-            modelBuilder.Entity("BoxNovaSoftAPI.Models.CategoriaProducto", b =>
-                {
-                    b.Property<int>("IdCProd")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdCProd"));
-
-                    b.Property<bool>("EstadoCProd")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("NombreCProd")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
-
-                    b.HasKey("IdCProd");
-
-                    b.ToTable("CategoriaProductos");
                 });
 
             modelBuilder.Entity("BoxNovaSoftAPI.Models.Cliente", b =>
@@ -305,7 +287,8 @@ namespace BoxNovaSoftAPI.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdProducto"));
 
                     b.Property<string>("Categoria")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "categoria_nombre");
 
                     b.Property<string>("CategoriaProducto")
                         .HasColumnType("nvarchar(max)");
@@ -606,7 +589,7 @@ namespace BoxNovaSoftAPI.Migrations
 
             modelBuilder.Entity("BoxNovaSoftAPI.Models.Producto", b =>
                 {
-                    b.HasOne("BoxNovaSoftAPI.Models.CategoriaProducto", "categoria")
+                    b.HasOne("CategoriaProducto", "categoria")
                         .WithMany()
                         .HasForeignKey("categoriaIdCProd")
                         .OnDelete(DeleteBehavior.Cascade)
