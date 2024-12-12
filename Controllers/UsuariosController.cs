@@ -9,6 +9,7 @@ using BoxNovaSoftAPI.Models;
 using BoxNovaSoftAPI.Models.Customs;
 using BoxNovaSoftAPI.Services;
 using Microsoft.AspNetCore.Authorization;
+using BoxNovaSoftAPI.Models.DTO;
 
 namespace BoxNovaSoftAPI.Controllers
 {
@@ -77,9 +78,24 @@ namespace BoxNovaSoftAPI.Controllers
         // GET: api/Usuarios
         //[Authorize]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Usuario>>> GetUsuarios()
+        public async Task<ActionResult<IEnumerable<UsuarioDTO>>> GetUsuarios()
         {
-            return await _context.Usuarios.ToListAsync();
+            var x = await _context.Usuarios
+                .Include( e => e.FkRolNavigation )
+                .Select( u => new UsuarioDTO
+                {
+                    IdUsuario = u.IdUsuario,
+                    TarjetaIdentidad = u.TarjetaIdentidad,
+                    NombreUsuario = u.NombreUsuario,
+                    CorreoUsuario = u.CorreoUsuario,
+                    ContrasenaUsuario = u.ContrasenaUsuario,
+                    CumpleanoUsuario = u.CumpleanoUsuario,
+                    GeneroUsuario = u.GeneroUsuario,
+                    EstadoUsuario = u.EstadoUsuario,
+                    Rol = u.FkRolNavigation.NombreRol
+                })
+                .ToListAsync();
+            return x;
         }
 
         // GET: api/Usuarios/5
@@ -126,11 +142,15 @@ namespace BoxNovaSoftAPI.Controllers
             if (formUsuario.ContrasenaUsuario != null)
                 usuario.ContrasenaUsuario = formUsuario.ContrasenaUsuario;
 
-            usuario.CumpleanoUsuario = formUsuario.CumpleanoUsuario; // Asignación directa, no es nullable
-
+            /*
+            if (formUsuario.CumpleanoUsuario != null)
+                usuario.CumpleanoUsuario = formUsuario.CumpleanoUsuario; // Asignación directa, no es nullable
+            */
             if (formUsuario.GeneroUsuario != null)
                 usuario.GeneroUsuario = formUsuario.GeneroUsuario;
 
+            Console.WriteLine("------------------------formUsuario.EstadoUsuario");
+            Console.WriteLine(formUsuario.EstadoUsuario);
             if (formUsuario.EstadoUsuario.HasValue)
                 usuario.EstadoUsuario = formUsuario.EstadoUsuario.Value;
 

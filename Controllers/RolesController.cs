@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using BoxNovaSoftAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 using BoxNovaSoftAPI.Models.Update;
+using BoxNovaSoftAPI.Models.DTO;
 
 namespace BoxNovaSoftAPI.Controllers
 {
@@ -35,16 +36,53 @@ namespace BoxNovaSoftAPI.Controllers
         // GET: api/Roles/5
         //[Authorize]
         [HttpGet("{id}")]
-        public async Task<ActionResult<Rol>> GetRol(int id)
+        public async Task<ActionResult<IEnumerable<PerXrolXprivDTO>>> GetRol(int id)
         {
-            var rol = await _context.Roles.FindAsync(id);
+            //var rol = await _context.Roles.FindAsync(id);
+            var rol = await _context.Roles.FirstOrDefaultAsync(r => r.IdRol == id);
 
             if (rol == null)
             {
                 return NotFound();
             }
 
-            return rol;
+            var priv = await (
+                from r in _context.Roles
+                join p in _context.PerXrolXprivs on r.IdRol equals p.IdRol
+                join x in _context.Permisos on p.IdPer equals x.IdPermiso
+                join pri in _context.Privilegios on p.IdPriv equals pri.IdPrivilegio
+
+                select new PerXrolXprivDTO
+                {
+                    IdPerxrol = p.IdPerxrol,
+                    NombrePermiso = x.NombrePermiso,
+                    NombreRol = r.NombreRol,
+                    NombrePrivilegio = pri.NombrePrivilegio
+                }
+            ).ToListAsync();
+            /*
+            var priv = _context.PerXrolXprivs.Where(r => r.IdRol == id).Select(e => new PerXrolXprivDTO
+            {
+                IdPerxrol = e.IdPerxrol,
+
+                IdPer = e.IdPer,
+
+                IdRol = e.IdRol,
+
+                IdPriv = e.IdPriv,
+            }).ToList();
+            */
+
+            if (priv.Any()) {
+                Console.WriteLine(priv[0].IdPerxrol);
+                //rol.PerXrolXprivs = priv;
+            }
+            else
+            {
+                priv = [];
+            }
+
+            return priv;
         }
 
         // PUT: api/Roles/5

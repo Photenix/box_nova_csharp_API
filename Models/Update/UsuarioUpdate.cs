@@ -13,7 +13,7 @@ public partial class UsuarioUpdate
 
     public string? ContrasenaUsuario { get; set; } = null!;
 
-    public DateOnly CumpleanoUsuario { get; set; }
+    public DateOnly? CumpleanoUsuario { get; set; }
 
     public string? GeneroUsuario { get; set; } = null!;
 

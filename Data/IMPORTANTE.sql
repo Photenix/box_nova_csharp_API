@@ -1,12 +1,23 @@
 -- ========================================
 -- Insertar en la tabla Permiso
 -- ========================================
-INSERT INTO Permisos (id_permiso, nombre_permiso, estado_permiso)
-VALUES (1, 'Acceso a Ventas', 1),
-       (2, 'Acceso a Pedidos', 1),
-       (3, 'Acceso a Inventarios', 1),
-       (4, 'Acceso a Reportes', 0),
-       (5, 'Acceso a Configuraciones', 1);
+--INSERT INTO Permisos (id_permiso, nombre_permiso, estado_permiso)
+--VALUES (1, 'Acceso a Ventas', 1),
+  --     (2, 'Acceso a Pedidos', 1),
+    --   (3, 'Acceso a Inventarios', 1),
+      -- (4, 'Acceso a Reportes', 0),
+       --(5, 'Acceso a Configuraciones', 1);
+
+INSERT INTO Permisos (id_permiso, nombre_permiso, estado_permiso) VALUES
+(1, 'Rol', 1),          -- Activo
+(2, 'Usuario', 1),      -- Activo
+(3, 'Acceso', 1),       -- Activo
+(4, 'Compra', 1),       -- Activo
+(5, 'Proveedores', 1),   -- Activo
+(6, 'Productos', 1),     -- Activo
+(7, 'Cliente', 1),       -- Activo
+(8, 'Orden de producto', 1), -- Activo
+(9, 'Venta', 1);
 
 -- ========================================
 -- Insertar en la tabla Privilegio
