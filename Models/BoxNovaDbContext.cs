@@ -22,21 +22,12 @@ public partial class BoxNovaDbContext : DbContext
 
     public virtual DbSet<Usuario> Usuarios { get; set; }
 
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-=======
-=======
->>>>>>> main
     public virtual DbSet<Cliente> Clientes { get; set; } = null!;
     public virtual DbSet<Carrito> Carritos { get; set; } = null!;
     public virtual DbSet<CategoriaProducto> CategoriaProductos { get; set; } = null!;
     public virtual DbSet<SubCategoriaProducto> SubCategoriaProductos { get; set; } = null!;
-<<<<<<< HEAD
-    public object DetalleVentas { get; internal set; }
 
->>>>>>> Stashed changes
-=======
-
+    // public object DetalleVentas { get; internal set; }
 
     public DbSet<Producto> Productos { get; set; }
     public DbSet<Venta> Ventas { get; set; }
@@ -47,7 +38,6 @@ public partial class BoxNovaDbContext : DbContext
     //public DbSet<CategoriaProducto> CatProductos { get; set; }
     //public DbSet<CodigoDeBarras> CodigosBarras { get; set; }
 
->>>>>>> main
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<PerXrolXpriv>(entity =>

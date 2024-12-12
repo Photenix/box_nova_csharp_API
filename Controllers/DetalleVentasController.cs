@@ -5,11 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-<<<<<<< HEAD
-using BoxNovaSoftAPI.Data;
-=======
-//using BoxNovaSoftAPI.Data;
->>>>>>> main
 using BoxNovaSoftAPI.Models;
 
 namespace BoxNovaSoftAPI.Controllers
