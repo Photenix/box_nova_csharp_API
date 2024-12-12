@@ -7,7 +7,7 @@
         public bool EstadoSubCProd { get; set; }
 
         public int IdCProd { get; set; } // Clave foránea
-        public CategoriaProducto CategoriaProducto { get; set; }  // Propiedad de navegación
+        public CategoriaProducto? CategoriaProducto { get; set; }  // Propiedad de navegación
     }
 
 

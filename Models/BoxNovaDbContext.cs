@@ -27,6 +27,7 @@ public partial class BoxNovaDbContext : DbContext
     public virtual DbSet<CategoriaProducto> CategoriaProductos { get; set; } = null!;
     public virtual DbSet<SubCategoriaProducto> SubCategoriaProductos { get; set; } = null!;
 
+    // public object DetalleVentas { get; internal set; }
 
     public DbSet<Producto> Productos { get; set; }
     public DbSet<Venta> Ventas { get; set; }
